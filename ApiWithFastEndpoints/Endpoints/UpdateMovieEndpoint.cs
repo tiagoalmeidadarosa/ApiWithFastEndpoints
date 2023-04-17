@@ -1,25 +1,24 @@
 using ApiWithFastEndpoints.Models.Requests;
-using ApiWithFastEndpoints.Models.Responses;
 using ApiWithFastEndpoints.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ApiWithFastEndpoints.Endpoints;
 
-[HttpPost("movies"), AllowAnonymous]
-public class CreateMovieEndpoint : Endpoint<CreateMovieRequest, MovieResponse?>
+[HttpPut("movies"), AllowAnonymous]
+public class UpdateMovieEndpoint : Endpoint<UpdateMovieRequest, EmptyResponse>
 {
     private readonly MovieService _movieService;
 
-    public CreateMovieEndpoint(MovieService movieService)
+    public UpdateMovieEndpoint(MovieService movieService)
     {
         _movieService = movieService;
     }
 
-    public override async Task HandleAsync(CreateMovieRequest request, CancellationToken ct)
+    public override async Task HandleAsync(UpdateMovieRequest request, CancellationToken ct)
     {
-        var created = await _movieService.Create(request);
+        var updated = await _movieService.Update(request);
 
-        if (!created)
+        if (!updated)
         {
             await SendErrorsAsync(cancellation: ct);
             return;

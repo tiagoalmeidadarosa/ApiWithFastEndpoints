@@ -67,4 +67,30 @@ public class MovieService
 
         return rowsAffected > 0;
     }
+
+    public async Task<bool> Update(UpdateMovieRequest movie)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var rowsAffected = await connection.ExecuteAsync(@"
+            UPDATE Movies SET
+                imdb_score = @ImdbScore
+            WHERE
+                Id = @Id",
+            movie);
+
+        return rowsAffected > 0;
+    }
+
+    public async Task<bool> Delete(long id)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var rowsAffected = await connection.ExecuteAsync(@"
+            DELETE FROM Movies
+            WHERE Id = @Id",
+            new { Id = id });
+
+        return rowsAffected > 0;
+    }
 }
