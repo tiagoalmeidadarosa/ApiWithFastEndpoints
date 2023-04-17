@@ -1,10 +1,9 @@
 ﻿#nullable disable
 
-namespace ApiWithFastEndpoints.Entities;
+namespace ApiWithFastEndpoints.Models.Requests;
 
-public class Movie
+public class CreateMovieRequest
 {
-    public long Id { get; set; }
     public string ImdbId { get; set; }
     public string Title { get; set; }
     public string Director { get; set; }

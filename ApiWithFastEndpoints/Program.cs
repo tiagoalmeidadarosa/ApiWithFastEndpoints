@@ -1,4 +1,5 @@
 global using FastEndpoints;
+global using FluentValidation;
 
 using ApiWithFastEndpoints.Database;
 using ApiWithFastEndpoints.Services;

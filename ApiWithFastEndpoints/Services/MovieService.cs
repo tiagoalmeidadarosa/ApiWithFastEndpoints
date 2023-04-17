@@ -1,5 +1,6 @@
 ﻿using ApiWithFastEndpoints.Database;
 using ApiWithFastEndpoints.Entities;
+using ApiWithFastEndpoints.Models.Requests;
 using ApiWithFastEndpoints.Models.Responses;
 using Dapper;
 
@@ -51,5 +52,19 @@ public class MovieService
             Genres = movie.Genres,
             ImdbScore = movie.ImdbScore,
         };
+    }
+
+    public async Task<bool> Create(CreateMovieRequest movie)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var rowsAffected = await connection.ExecuteAsync(@"
+            INSERT INTO Movies
+                (imdb_id, title, director, year, rating, genres, runtime, country, language, imdb_score, imdb_votes, metacritic_score) 
+            VALUES
+                (@ImdbId, @Title, @Director, @Year, @Rating, @Genres, @Runtime, @Country, @Language, @ImdbScore, @ImdbVotes, @MetacriticScore)",
+            movie);
+
+        return rowsAffected > 0;
     }
 }
