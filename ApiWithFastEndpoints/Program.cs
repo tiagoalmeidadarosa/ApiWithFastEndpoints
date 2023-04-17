@@ -3,6 +3,7 @@ global using FastEndpoints;
 using ApiWithFastEndpoints.Database;
 using ApiWithFastEndpoints.Services;
 using FastEndpoints.Swagger;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
@@ -15,7 +16,11 @@ builder.Services.AddTransient<MovieService>();
 
 var app = builder.Build();
 app.UseAuthorization();
-app.UseFastEndpoints();
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "api";
+    c.Serializer.Options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 
 app.UseOpenApi();
 app.UseSwaggerUi3(s => s.ConfigureDefaults());
