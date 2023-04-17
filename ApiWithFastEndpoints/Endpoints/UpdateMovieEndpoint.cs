@@ -1,3 +1,4 @@
+using ApiWithFastEndpoints.Mappers;
 using ApiWithFastEndpoints.Models.Requests;
 using ApiWithFastEndpoints.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -5,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace ApiWithFastEndpoints.Endpoints;
 
 [HttpPut("movies"), AllowAnonymous]
-public class UpdateMovieEndpoint : Endpoint<UpdateMovieRequest, EmptyResponse>
+public class UpdateMovieEndpoint : Endpoint<UpdateMovieRequest, EmptyResponse, UpdateMovieMapper>
 {
     private readonly MovieService _movieService;
 
@@ -16,7 +17,7 @@ public class UpdateMovieEndpoint : Endpoint<UpdateMovieRequest, EmptyResponse>
 
     public override async Task HandleAsync(UpdateMovieRequest request, CancellationToken ct)
     {
-        var updated = await _movieService.Update(request);
+        var updated = await _movieService.Update(Map.ToEntity(request));
 
         if (!updated)
         {

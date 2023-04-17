@@ -2,5 +2,5 @@
 
 public class MovieRequest
 {
-    public long Id { get; init; }
+    public long Id { get; set; }
 }

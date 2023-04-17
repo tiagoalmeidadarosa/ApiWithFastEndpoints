@@ -1,7 +1,5 @@
 ﻿using ApiWithFastEndpoints.Database;
 using ApiWithFastEndpoints.Entities;
-using ApiWithFastEndpoints.Models.Requests;
-using ApiWithFastEndpoints.Models.Responses;
 using Dapper;
 
 namespace ApiWithFastEndpoints.Services;
@@ -15,23 +13,17 @@ public class MovieService
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<IEnumerable<MovieResponse>> Get()
+    public async Task<IEnumerable<Movie>> Get()
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
         var movies = await connection.QueryAsync<Movie>(
             @"SELECT id, title, genres, CAST(imdb_score AS REAL) AS imdb_score FROM movies");
 
-        return movies.Select(m => new MovieResponse()
-        {
-            Id = m.Id,
-            Title = m.Title,
-            Genres = m.Genres,
-            ImdbScore = m.ImdbScore,
-        });
+        return movies;
     }
 
-    public async Task<MovieResponse?> Get(long id)
+    public async Task<Movie?> Get(long id)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
@@ -45,16 +37,10 @@ public class MovieService
             return null;
         }
 
-        return new MovieResponse()
-        {
-            Id = movie.Id,
-            Title = movie.Title,
-            Genres = movie.Genres,
-            ImdbScore = movie.ImdbScore,
-        };
+        return movie;
     }
 
-    public async Task<long> Create(CreateMovieRequest movie)
+    public async Task<long> Create(Movie movie)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
@@ -69,7 +55,7 @@ public class MovieService
         return id;
     }
 
-    public async Task<bool> Update(UpdateMovieRequest movie)
+    public async Task<bool> Update(Movie movie)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 

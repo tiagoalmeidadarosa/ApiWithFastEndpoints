@@ -1,3 +1,4 @@
+using ApiWithFastEndpoints.Mappers;
 using ApiWithFastEndpoints.Models.Requests;
 using ApiWithFastEndpoints.Models.Responses;
 using ApiWithFastEndpoints.Services;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace ApiWithFastEndpoints.Endpoints;
 
 [HttpPost("movies"), AllowAnonymous]
-public class CreateMovieEndpoint : Endpoint<CreateMovieRequest, MovieResponse?>
+public class CreateMovieEndpoint : Endpoint<CreateMovieRequest, MovieResponse, CreateMovieMapper>
 {
     private readonly MovieService _movieService;
 
@@ -17,7 +18,8 @@ public class CreateMovieEndpoint : Endpoint<CreateMovieRequest, MovieResponse?>
 
     public override async Task HandleAsync(CreateMovieRequest request, CancellationToken ct)
     {
-        var id = await _movieService.Create(request);
+        var entity = Map.ToEntity(request);
+        var id = await _movieService.Create(entity);
 
         if (id == default)
         {
@@ -25,12 +27,8 @@ public class CreateMovieEndpoint : Endpoint<CreateMovieRequest, MovieResponse?>
             return;
         }
 
-        await SendAsync(new MovieResponse()
-        {
-            Id = id,
-            Title = request.Title,
-            Genres = request.Genres,
-            ImdbScore = request.ImdbScore,
-        }, cancellation: ct);
+        entity.Id = id;
+
+        await SendAsync(Map.FromEntity(entity), cancellation: ct);
     }
 }

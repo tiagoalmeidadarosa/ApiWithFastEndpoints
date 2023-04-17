@@ -1,3 +1,4 @@
+using ApiWithFastEndpoints.Mappers;
 using ApiWithFastEndpoints.Models.Responses;
 using ApiWithFastEndpoints.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -5,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace ApiWithFastEndpoints.Endpoints;
 
 [HttpGet("movies"), AllowAnonymous]
-public class GetMoviesEndpoint : Endpoint<EmptyRequest, IEnumerable<MovieResponse>>
+public class GetMoviesEndpoint : Endpoint<EmptyRequest, IEnumerable<MovieResponse>, MovieMapper>
 {
     private readonly MovieService _movieService;
 
@@ -18,6 +19,6 @@ public class GetMoviesEndpoint : Endpoint<EmptyRequest, IEnumerable<MovieRespons
     {
         var movies = await _movieService.Get();
 
-        await SendAsync(movies, cancellation: ct);
+        await SendAsync(movies.Select(Map.FromEntity), cancellation: ct);
     }
 }
