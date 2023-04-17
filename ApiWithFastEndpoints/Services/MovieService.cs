@@ -54,18 +54,19 @@ public class MovieService
         };
     }
 
-    public async Task<bool> Create(CreateMovieRequest movie)
+    public async Task<long> Create(CreateMovieRequest movie)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
-        var rowsAffected = await connection.ExecuteAsync(@"
+        var id = await connection.QuerySingleOrDefaultAsync<long>(@"
             INSERT INTO Movies
-                (imdb_id, title, director, year, rating, genres, runtime, country, language, imdb_score, imdb_votes, metacritic_score) 
+                (imdb_id, title, director, year, rating, genres, runtime, country, language, imdb_score, imdb_votes, metacritic_score)
             VALUES
-                (@ImdbId, @Title, @Director, @Year, @Rating, @Genres, @Runtime, @Country, @Language, @ImdbScore, @ImdbVotes, @MetacriticScore)",
-            movie);
+                (@ImdbId, @Title, @Director, @Year, @Rating, @Genres, @Runtime, @Country, @Language, @ImdbScore, @ImdbVotes, @MetacriticScore)
+            RETURNING id
+            ", movie);
 
-        return rowsAffected > 0;
+        return id;
     }
 
     public async Task<bool> Update(UpdateMovieRequest movie)

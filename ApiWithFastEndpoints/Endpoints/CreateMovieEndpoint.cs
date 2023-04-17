@@ -17,14 +17,20 @@ public class CreateMovieEndpoint : Endpoint<CreateMovieRequest, MovieResponse?>
 
     public override async Task HandleAsync(CreateMovieRequest request, CancellationToken ct)
     {
-        var created = await _movieService.Create(request);
+        var id = await _movieService.Create(request);
 
-        if (!created)
+        if (id == default)
         {
             await SendErrorsAsync(cancellation: ct);
             return;
         }
 
-        await SendNoContentAsync(ct);
+        await SendAsync(new MovieResponse()
+        {
+            Id = id,
+            Title = request.Title,
+            Genres = request.Genres,
+            ImdbScore = request.ImdbScore,
+        }, cancellation: ct);
     }
 }
