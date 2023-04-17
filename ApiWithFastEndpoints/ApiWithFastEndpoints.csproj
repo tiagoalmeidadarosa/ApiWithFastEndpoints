@@ -14,8 +14,4 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Requests\" />
-  </ItemGroup>
-
 </Project>

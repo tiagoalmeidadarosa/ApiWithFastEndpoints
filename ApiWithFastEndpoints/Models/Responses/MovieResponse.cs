@@ -2,7 +2,7 @@
 
 namespace ApiWithFastEndpoints.Models.Responses;
 
-public class MoviesResponse
+public class MovieResponse
 {
     public long Id { get; set; }
     public string Title { get; set; }

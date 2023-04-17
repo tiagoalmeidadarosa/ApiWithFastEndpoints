@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace ApiWithFastEndpoints.Endpoints;
 
 [HttpGet("movies"), AllowAnonymous]
-public class GetMoviesEndpoint : Endpoint<EmptyRequest, IEnumerable<MoviesResponse>>
+public class GetMoviesEndpoint : Endpoint<EmptyRequest, IEnumerable<MovieResponse>>
 {
     private readonly MovieService _movieService;
 
@@ -16,7 +16,7 @@ public class GetMoviesEndpoint : Endpoint<EmptyRequest, IEnumerable<MoviesRespon
 
     public override async Task HandleAsync(EmptyRequest request, CancellationToken ct)
     {
-        var movies = await _movieService.List();
+        var movies = await _movieService.Get();
 
         await SendAsync(movies, cancellation: ct);
     }
